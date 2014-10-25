@@ -52,15 +52,6 @@
   )
 )
 
-(defn toggle [a-set elem]
- (loop [counter 0 currentSeq a-set temp 0]
-   (cond (empty? currentSeq)  temp
-          (contains? (set currentSeq) elem)  (recur (inc counter) (rest currentSeq) (inc temp))
-         :else (recur (inc counter) (rest currentSeq) temp)
-    )
-  )
-)
-
 (defn countOf[a-seq elem]
    (loop [number 0 currentSeq a-seq]
       (cond (empty? currentSeq) number
@@ -71,22 +62,16 @@
  )
 
 (defn filteredSeq[a-seq elemToRemove]
-  (loop [currentSeq a-seq finalSeq []]
-      (cond (empty? currentSeq) finalSeq
-             (and (contains? (set finalSeq) elemToRemove) (= (first currentSeq) elemToRemove)) (recur (rest currentSeq) finalSeq)
-             (even? (countOf currentSeq elemToRemove)) (recur (rest currentSeq) finalSeq);
-            :else (recur (rest currentSeq) (conj finalSeq (first currentSeq)))
-       )
-    )
+  (remove (set (vector (first a-seq))) a-seq)
   )
 
 (defn parity [a-seq]
-  (loop [resultset (set []) currentSeq a-seq]
-    (cond (empty? currentSeq) resultset
-           (odd? (countOf currentSeq (first currentSeq))) (recur (conj resultset (first currentSeq)) (filteredSeq (rest currentSeq) (first currentSeq)))
-           :else (recur resultset (filteredSeq (rest currentSeq) (first currentSeq)))
+  (loop [resultset [] currentSeq a-seq]
+    (cond (empty? currentSeq) (set resultset)
+           (odd? (countOf currentSeq (first currentSeq))) (recur (concat resultset (vector(first currentSeq))) (filteredSeq currentSeq (first currentSeq)))
+           :else (recur resultset (filteredSeq currentSeq (first currentSeq)))
+    )
   )
-)
 )
 
 (defn fast-fibo [n]
